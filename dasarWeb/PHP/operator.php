@@ -41,5 +41,34 @@ echo "Hasil Operasi OR : " . ($hasilOr ? 'True' : 'False') . "<br>";
 echo "Hasil Operasi NOT A : " . ($hasilNotA ? 'True' : 'False') . "<br>";
 echo "Hasil Operasi NOT B : " . ($hasilNotB ? 'True' : 'False') . "<br>";
 
+// $a += $b ;
+// $a -= $b ;
+// $a *= $b ;
+// $a /= $b ;
+// $a %= $b ;
+
+echo "<br>";
+echo "Hasil A += B : " . ($a += $b) . "<br>";
+echo "Hasil A -= B : " . ($a -= $b) . "<br>";
+echo "Hasil A *= B : " . ($a *= $b) . "<br>";
+echo "Hasil A /= B : " . ($a /= $b) . "<br>";
+echo "Hasil A %= B : " . ($a %= $b) . "<br>";
+
+$hasilIdentik = $a === $b;
+$hasilTidakIdentik = $a !== $b;
+
+echo "<br>";
+echo "Hasil A === B : " . ($hasilIdentik ? 'True' : 'False') . "<br>";
+echo "Hasil A !== B : " . ($hasilTidakIdentik ? 'True' : 'False') . "<br>";
+
+// soal
+$kursi = 45;
+$adaOrang = 18;
+$presentase = (45 - 18) / 45 * 100;
+
+echo "<br>";
+echo "Kursi yang tersedia : $kursi <br>";
+echo "Orang yang ada : $adaOrang <br>";
+echo "Presentase Kursi yang tersedia : $presentase% <br>";
 ?>
 
