@@ -84,7 +84,29 @@ echo "<br>";
 echo "Nilai Terkecil : $nilaiTerkecil <br>";
 echo "Nilai Terbesar : $nilaiTerbesar <br>";
 echo "Nilai Total (Selain Nilai Terkecil dan Terbesar) : $nilaiTotal <br>"; 
+echo "<br>";
+// soal
+$produkA = 120000;
+$diskon = 20;
+if ( $produkA > 1) {
+    $produkA = $produkA - ($produkA * ($diskon/100 ));
+    echo "Harga Yang harus dibayar : " . $produkA;
+    
+} 
 
+echo "<br>";
+echo "<br>";
 
+echo "<br>";
+
+$skorPemain = 600;
+$hadiahTambahan = false;
+
+if ($skorPemain > 500) {
+    $hadiahTambahan = true;
+}
+
+echo "Total skor pemain adalah: $skorPemain <br>";
+echo "Apakah pemain mendapatkan hadiah tambahan? " . ($hadiahTambahan ? 'YA' : 'TIDAK') . "<br>";
 ?>
 
