@@ -44,6 +44,6 @@ echo $namaLengkap;
 $listMahasiswa = array ("Wahid Abdullah", "Ibnu kaisar", "Muhammad Joshua", "Iqbal Anjay ");
 
 echo $listMahasiswa[0];
-
+ 
 ?>
 
