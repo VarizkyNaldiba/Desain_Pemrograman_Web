@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Praktikum JQuery</title> -->
+    <style>
+        #paragraf {
+            width: 600px;
+            height: 80px;
+            background-color: pink;
+            line-height: 80px;
+            text-align: center;
+            font-size: 30px;
+            /* border: solid 3px black; */
+        }
+    </style>
+    <script src="jquery-3.7.1.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Ubah warna teks menjadi putih saat paragraf diklik
+            $("#paragraf").click(function() {
+                $(this).css("color", "white");
+            });
+
+            // Ubah warna background menjadi silver saat mouseover
+            $("#paragraf").mouseover(function() {
+                $(this).css("background-color", "silver");
+            });
+
+            // Kembalikan warna background menjadi biru saat mouseout
+            $("#paragraf").mouseout(function() {
+                $(this).css("background-color", "blue");
+            });
+
+            // Ubah beberapa properti saat double click (bisa diisi aksi lain)
+            $("#paragraf").dblclick(function() {
+                $(this).css("font-size", "40px"); // Contoh aksi pada dblclick
+            });
+
+            // Set warna latar belakang awal menjadi biru
+            $("#paragraf").css("background-color", "blue");
+        });
+    </script>
+</head>
+<body>
+    <p id="paragraf">Praktikum Minggu ke-4 JQuery</p>
+</body>
+</html>
