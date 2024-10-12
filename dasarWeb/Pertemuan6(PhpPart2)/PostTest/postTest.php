@@ -27,14 +27,14 @@
         </tr>
         <?php
     
-        $absen = array(
+        $mhs = array(
             array("Josh", "20", "TI 2F","Batu"),
             array("Variz", "21", "TI 2F","Papua"),
             array("Rafi", "23", "TI 2F","Padang"),
             array("Agil", "24", "TI 2F","Malang"),
 
         );
-        foreach ($absen as $key => $value) {
+        foreach ($mhs as $key => $value) {
             echo "<tr>";
             echo "<td>" . $value[0] . "</td>";
             echo "<td>" . $value[1] . "</td>";
@@ -47,10 +47,10 @@
     </table>
     <?php 
     $usia = 0;
-    foreach ($absen as $key => $value) {
+    foreach ($mhs as $key => $value) {
         $usia += $value[1];
     }
-    $avg_usia = $usia / count($absen);
+    $avg_usia = $usia / count($mhs);
     echo "<h1> Nilai rata-rata usia :  " . ($avg_usia) . "</h1>  ";
     ?>
 </div>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Dinamis Sederhana</title>
+    <link rel="stylesheet" href="form.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Belajar Membuat Form Dinamis</h1>
+
+    <!-- Input untuk jumlah indeks -->
+    <label for="indeks">Masukkan Jumlah Indeks:</label>
+    <input type="number" id="indeks" name="indeks" min="1" max="100">
+    <button type="button" id="generateForm">Buat Form</button>
+
+    <!-- Form dinamis -->
+    <form id="dynamicForm" method="post" action="form.php">
+        <div id="formContainer" style="width: 500px;"></div> <!-- Tempat form dinamis akan muncul -->
+        <input type="submit" value="Kirim">
+    </form>
+
+    <script>
+        $(document).ready(function() {
+            $("#generateForm").click(function() {
+                // Ambil nilai dari input indeks
+                var indeks = $("#indeks").val();
+                var formContainer = $("#formContainer");
+
+                // Kosongkan formContainer sebelum menambahkan input baru
+                formContainer.html(""); 
+
+                // Validasi jika nilai indeks tidak sesuai
+                if (indeks < 1 || indeks > 100) {
+                    alert("Silakan masukkan indeks antara 1 sampai 100.");
+                    return;
+                }
+
+                // Menambahkan input text berdasarkan jumlah indeks
+                for (var i = 1; i <= indeks; i++) {
+                    var labelNama = "<label style='display: inline-block; width: 150px;' for='nama_" + i + "'>Nama " + i + ":</label>";
+                    var inputNama = "<input type='text' style='display: inline-block; width: 200px;' id='nama_" + i + "' name='nama_" + i + "' required><br>";
+                    
+                    // Tambahkan elemen input ke dalam formContainer
+                    formContainer.append(labelNama + inputNama);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
