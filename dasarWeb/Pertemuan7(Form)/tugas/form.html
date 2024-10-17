@@ -42,8 +42,14 @@
                     var labelNama = "<label style='display: inline-block; width: 150px;' for='nama_" + i + "'>Nama " + i + ":</label>";
                     var inputNama = "<input type='text' style='display: inline-block; width: 200px;' id='nama_" + i + "' name='nama_" + i + "' required><br>";
                     
+                    var labelAlamat = "<label style='display: inline-block; width: 150px;' for='alamat_" + i + "'>Alamat " + i + ":</label>";
+                    var inputAlamat = "<input type='text' style='display: inline-block; width: 200px;' id='alamat_" + i + "' name='alamat_" + i + "' required><br>";
+
+                    var labelAsalDaerah = "<label style='display: inline-block; width: 150px;' for='asal_" + i + "'>Asal Daerah " + i + ":</label>";
+                    var inputAsalDaerah = "<input type='text' style='display: inline-block; width: 200px;' id='asal_" + i + "' name='asal_" + i + "' required><br>";
+                    
                     // Tambahkan elemen input ke dalam formContainer
-                    formContainer.append(labelNama + inputNama);
+                    formContainer.append(labelNama + inputNama + labelAlamat + inputAlamat + labelAsalDaerah + inputAsalDaerah);
                 }
             });
         });
