@@ -1,0 +1,42 @@
+*{
+    font-family: 'Arial', sans-serif;
+}
+
+h1 {
+    color: #ffffff;
+    font-size: 36px;
+    font-weight: bold;
+    text-align: center;
+    background-image: url(img/AnemoBoys.jpg);
+}
+body {
+    background-image:url(img/ff.jpg);
+    background-oppacity: 0.8;
+    background-color: #f8f9fa;
+    font-size: 16px;
+    background-repeat: no-repeat;
+}
+
+h2 {
+    
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    background-image: url(img/AnemoBoys.jpg) ;
+}
+
+.table {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn-danger {
+    background-color: #dc3545;
+}
+
+.form-group input {
+    border-radius: 4px;
+}
+
