@@ -5,20 +5,20 @@ session_start();
 if (!isset($_SESSION['tataTertib']) || !is_array($_SESSION['tataTertib'])) {
     $_SESSION['tataTertib'] = [
         ["Menggunakan handphone di kelas", "V"],
-        ["Berbicara pada saaat pembelajaran berlangsung", "V"],
+        ["Berbicara pada saat pembelajaran berlangsung", "V"],
         ["Menggunakan handphone di perpustakaan", "V"],
         ["Membawa makanan dan minuman ke dalam kelas", "IV"],
         ["Menyalahgunakan fasilitas kampus", "III"],
         ["Menggunakan fasilitas laboratorium tanpa izin", "II"],
         ["Merusak fasilitas kampus", "III"],
-        ["Mengganggu kegiatan kampus ", "III"],
+        ["Mengganggu kegiatan kampus", "III"],
         ["Membuat keributan di kampus", "I"]
     ];
 }
 
 // hapus tatib
-if (isset($_GET['delete'])) {
-    $index = $_GET['delete'];
+if (isset($_GET['hapus'])) {
+    $index = (int) $_GET['hapus'];
     if (isset($_SESSION['tataTertib'][$index])) {
         unset($_SESSION['tataTertib'][$index]);
         $_SESSION['tataTertib'] = array_values($_SESSION['tataTertib']); // Reset indeks array
@@ -27,10 +27,13 @@ if (isset($_GET['delete'])) {
 
 // tambah tatib
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $new_rule = $_POST['new_rule'];
-    $new_level = $_POST['new_level'];
-    $_SESSION['tataTertib'][] = [$new_rule, $new_level];
-    echo "<script>alert('Tata tertib berhasil ditambahkan: $new_rule'); window.location.href = 'tatib.php';</script>";
+    $tatib_baru = trim($_POST['tatib_baru']);
+    $tingkatan = trim($_POST['tingkatan']);
+    if (!empty($tatib_baru) && !empty($tingkatan)) {
+        $_SESSION['tataTertib'][] = [$tatib_baru, $tingkatan];
+        header("Location: tatib.php");
+        exit;
+    }
 }
 
 ?>
@@ -41,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tata Tertib Mahasiswa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
         function konfirmasiHapus() {
             return confirm("Apakah Anda yakin ingin menghapus tata tertib ini?");
@@ -49,9 +53,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 </head>
 <body>
-    <div class="container">
-        <h1 class="text-center my-4">Tata Tertib Mahasiswa</h1>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand text-center" href="tatib.php">TATA TERTIB MAHASISWA</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="tatib.php">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="tatib.php">Tata Tertib</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
+    <div class="container">
+        
         <!-- Tabel tata tertib -->
         <table class="table table-striped text-center">
             <thead>
@@ -66,10 +88,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php foreach ($_SESSION['tataTertib'] as $index => $item): ?>
                 <tr>
                     <th scope="row"><?= $index + 1 ?></th>
-                    <td><?= $item[0] ?></td>
-                    <td><?= $item[1] ?></td>
+                    <td><?= ($item[0]) ?></td>
+                    <td><?= ($item[1]) ?></td>
                     <td>
-                        <a href="tatib.php?delete=<?= $index ?>" class="btn btn-danger" onclick="return konfirmasiHapus();">Delete</a>
+                        <a href="tatib.php?hapus=<?= $index ?>" class="btn btn-danger" onclick="return konfirmasiHapus();">hapus</a>
                     </td>
                 </tr>
                 <?php endforeach; ?>
@@ -79,12 +101,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Form tambah tata tertib -->
         <form action="tatib.php" method="POST" class="mt-4">
             <div class="form-group mb-3">
-                <label for="new_rule">Jenis Pelanggaran:</label>
-                <input type="text" name="new_rule" id="new_rule" class="form-control" required>
+                <label for="tatib_baru">Jenis Pelanggaran:</label>
+                <input type="text" name="tatib_baru" id="tatib_baru" class="form-control" required>
             </div>
             <div class="form-group mb-3">
-                <label for="new_level">Tingkat Pelanggaran:</label>
-                <select name="new_level" id="new_level" class="form-control" required>
+                <label for="tingkatan">Tingkat Pelanggaran:</label>
+                <select name="tingkatan" id="tingkatan" class="form-control" required>
                     <option value="">Pilih Tingkat Pelanggaran</option>
                     <option value="I">I</option>
                     <option value="II">II</option>
