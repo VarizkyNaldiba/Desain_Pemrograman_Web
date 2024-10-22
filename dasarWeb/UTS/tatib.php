@@ -1,46 +1,39 @@
 <?php
 session_start();
 
-// Inisialisasi tata tertib jika belum ada di session
-if (!isset($_SESSION['tataTertib'])) {
-    $_SESSiON['tataTertib'] = [
+// Inisialisasi tata tertib
+if (!isset($_SESSION['tataTertib']) || !is_array($_SESSION['tataTertib'])) {
+    $_SESSION['tataTertib'] = [
         ["Menggunakan handphone di kelas", "V"],
+        ["Berbicara pada saaat pembelajaran berlangsung", "V"],
         ["Menggunakan handphone di perpustakaan", "V"],
         ["Membawa makanan dan minuman ke dalam kelas", "IV"],
-        ["Salah menggunakan fasilitas laboratorium", "III"],
+        ["Menyalahgunakan fasilitas kampus", "III"],
         ["Menggunakan fasilitas laboratorium tanpa izin", "II"],
-        ["Tidak mengikuti kegiatan kampus", "III"],
-        ["Mengganggu ketertiban kampus", "III"],
+        ["Merusak fasilitas kampus", "III"],
+        ["Mengganggu kegiatan kampus ", "III"],
         ["Membuat keributan di kampus", "I"]
     ];
 }
 
-// Menangani penghapusan tata tertib
+// hapus tatib
 if (isset($_GET['delete'])) {
     $index = $_GET['delete'];
-    unset($_SESSION['tataTertib'][$index]);
-    $_SESSION['tataTertib'] = array_values($_SESSION['tataTertib']); // Reset index
-    header("Location: index.php");
-    exit();
+    if (isset($_SESSION['tataTertib'][$index])) {
+        unset($_SESSION['tataTertib'][$index]);
+        $_SESSION['tataTertib'] = array_values($_SESSION['tataTertib']); // Reset indeks array
+    }
 }
 
-// Menangani penambahan tata tertib baru
-if (isset($_POST['new_rule']) && isset($_POST['new_level'])) {
+// tambah tatib
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $new_rule = $_POST['new_rule'];
     $new_level = $_POST['new_level'];
     $_SESSION['tataTertib'][] = [$new_rule, $new_level];
-    header("Location: index.php");
-    exit();
+    echo "<script>alert('Tata tertib berhasil ditambahkan: $new_rule'); window.location.href = 'tatib.php';</script>";
 }
 
-// Mengatur cookies pengguna jika belum ada
-if (!isset($_COOKIE['user'])) {
-    setcookie("user", "Pengguna", time() + (86400 * 30), "/");
-} else {
-    $user = $_COOKIE['user'];
-}
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,10 +41,15 @@ if (!isset($_COOKIE['user'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tata Tertib Mahasiswa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="konfirmasi.js"></script>
+    <script>
+        function konfirmasiHapus() {
+            return confirm("Apakah Anda yakin ingin menghapus tata tertib ini?");
+        }
+    </script>
+
 </head>
 <body>
-    <div class="form-container">
+    <div class="container">
         <h1 class="text-center my-4">Tata Tertib Mahasiswa</h1>
 
         <!-- Tabel tata tertib -->
@@ -71,7 +69,7 @@ if (!isset($_COOKIE['user'])) {
                     <td><?= $item[0] ?></td>
                     <td><?= $item[1] ?></td>
                     <td>
-                        <a href="index.php?delete=<?= $index ?>" class="btn btn-danger" onclick="return konfirmasiHapus();">Hapus</a>
+                        <a href="tatib.php?delete=<?= $index ?>" class="btn btn-danger" onclick="return konfirmasiHapus();">Delete</a>
                     </td>
                 </tr>
                 <?php endforeach; ?>
@@ -79,9 +77,9 @@ if (!isset($_COOKIE['user'])) {
         </table>
 
         <!-- Form tambah tata tertib -->
-        <form action="index.php" method="POST" class="mt-4">
+        <form action="tatib.php" method="POST" class="mt-4">
             <div class="form-group mb-3">
-                <label for="new_rule"><b>Jenis Pelanggaran:</b></label>
+                <label for="new_rule">Jenis Pelanggaran:</label>
                 <input type="text" name="new_rule" id="new_rule" class="form-control" required>
             </div>
             <div class="form-group mb-3">
@@ -100,3 +98,4 @@ if (!isset($_COOKIE['user'])) {
     </div>
 </body>
 </html>
+
