@@ -60,15 +60,13 @@ if (isset($_GET['logout'])) {
 
         $(document).ready(function() {
             $("#logout").click(function() {
-                if (confirm("Apakah Anda yakin ingin logout?")) {
-                    $.ajax({
-                        url: "logout.php",
-                        type: "POST",
-                        success: function() {
-                            window.location.href = "login.php";
-                        }
-                    });
-                }
+                $.ajax({
+                    url: "logout.php",
+                    type: "post ",
+                    success: function() {
+                        window.location.href = "login.php";
+                    }
+                });
             });
         });
     </script>
