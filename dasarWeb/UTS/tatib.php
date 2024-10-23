@@ -36,26 +36,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// logout
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header("Location: login.php");
+    exit;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
+    <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tata Tertib Mahasiswa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="apalah.css">
     <script>
         function konfirmasiHapus() {
             return confirm("Apakah Anda yakin ingin menghapus tata tertib ini?");
         }
-    </script>
 
+        $(document).ready(function() {
+            $("#logout").click(function() {
+                if (confirm("Apakah Anda yakin ingin logout?")) {
+                    $.ajax({
+                        url: "logout.php",
+                        type: "POST",
+                        success: function() {
+                            window.location.href = "login.php";
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand text-center" href="tatib.php">TATA TERTIB MAHASISWA</a>
+            <a class="navbar-brand text-center " id="logo" href="tatib.php" ><b>TATA TERTIB MAHASISWA</b></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -65,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <a class="nav-link active" aria-current="page" href="tatib.php">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="tatib.php">Tata Tertib</a>
+                        <a class="nav-link" href="login.php" id="logout">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -81,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <th scope="col">No</th>
                     <th scope="col">Jenis Pelanggaran</th>
                     <th scope="col">Tingkat Pelanggaran</th>
-                    <th scope="col">Aksi</th>
+                    <th scope="col">Keterangan</th>
                 </tr>
             </thead>
             <tbody>
@@ -101,11 +122,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Form tambah tata tertib -->
         <form action="tatib.php" method="POST" class="mt-4">
             <div class="form-group mb-3">
-                <label for="tatib_baru">Jenis Pelanggaran:</label>
+                <label id ="jenis" for="tatib_baru" >Jenis Pelanggaran:</label>
                 <input type="text" name="tatib_baru" id="tatib_baru" class="form-control" required>
             </div>
             <div class="form-group mb-3">
-                <label for="tingkatan">Tingkat Pelanggaran:</label>
+                <label id="tingkat" for="tingkatan">Tingkat Pelanggaran:</label>
                 <select name="tingkatan" id="tingkatan" class="form-control" required>
                     <option value="">Pilih Tingkat Pelanggaran</option>
                     <option value="I">I</option>

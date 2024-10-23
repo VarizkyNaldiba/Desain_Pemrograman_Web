@@ -10,16 +10,21 @@
 <body>
 
 <form action="login.php" method="post">
-  <div class="row g-3 align-items-center">
-    <div class="col-auto">
-      <label for="inputPassword6" class="col-form-label">Your Code !</label>
-    </div>
+    <div class="d-flex justify-content-center align-items-center" style="height: 79vh;">
+  <div id="login" class="text-center">
+    <h3><b> Login </b></h3>
+    <div class="row g-3 align-items-center">
+    <div id="code" class="col-auto">
+      <label for="inputPassword6" class="col-form-label"><b>Your Code ! </b></label>
+    </div>  
     <div class="col-auto">
       <div class="input-group">
         <input type="password" id="inputPassword6" name="kode" class="form-control" aria-describedby="passwordHelpInline" style="text-align: center;">
       </div>
     </div>
-    <div class="col-auto"><button type="submit" class="btn btn-secondary">Enter</button></div>
+    <div class="col-auto"><button type="submit" class="btn btn-secondary"> Start </button></div>
+  </div>
+</div>
   </div>
 </form>
 

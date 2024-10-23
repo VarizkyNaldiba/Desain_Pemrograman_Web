@@ -1,0 +1,16 @@
+body {
+    background-image: url("img/ff.jpg");
+    background-repeat: repeat;
+    background-size: cover;
+    background-color: black;
+}
+
+#jenis {
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+}
+
+#tingkat {
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+}
