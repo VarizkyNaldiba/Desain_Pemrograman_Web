@@ -10,7 +10,7 @@ $conn = sqlsrv_connect($servername, $array);
 
 // Check connection
 if ($conn) {
-  echo "Connected successfully\n";
+
 } else {
   echo "Connection could not be established.\n";
 }
