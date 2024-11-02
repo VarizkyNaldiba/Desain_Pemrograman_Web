@@ -10,9 +10,9 @@ $conn = sqlsrv_connect($servername, $array);
 
 // Check connection
 if ($conn) {
-  echo "Connection established.\n";
+  // echo "[Database nyambung.]\n";
 } else {
-  echo "Connection could not be established.\n";
+  echo "[Ga nyambung.]\n";
 }
 
 ?>
