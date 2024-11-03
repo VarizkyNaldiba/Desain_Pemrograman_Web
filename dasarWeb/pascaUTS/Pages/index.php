@@ -137,9 +137,10 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'delete') {
 </head>
 
 <body>
+    
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#"><b>Provinsi Indonesia</b></a>
+            <a class="navbar-brand" href="index.php"><b>Provinsi Indonesia</b></a>
         </div>
     </nav>
 
@@ -204,6 +205,7 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'delete') {
                     <?php $i++; } ?>
             </tbody>
         </table>
+        
     </div>
-
+</body>
 
