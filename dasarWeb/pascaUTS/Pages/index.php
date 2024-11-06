@@ -4,18 +4,20 @@ include 'ConnectToDB.php';
 // Fungsi untuk menambah provinsi
 function createProvince($conn, $id_provinsi, $nama_provinsi, $ibukota)
 {
+        
     $sql = "INSERT INTO provinsi (id_provinsi, nama_provinsi, ibukota) VALUES (?, ?, ?)";
-    $params = [$id_provinsi, $nama_provinsi, $ibukota];
-    $stmt = sqlsrv_prepare($conn, $sql, $params);
-
-    if ($stmt && sqlsrv_execute($stmt)) {
+    $parameter = [$id_provinsi, $nama_provinsi, $ibukota];
+    $DataPengganti = sqlsrv_prepare($conn, $sql, $parameter);
+    // sqlsrv_prepare untuk mempersiapkan query sql trus di simpan di $DataPengganti
+    if ($DataPengganti && sqlsrv_execute($DataPengganti)) {
+        // sqlsrv_execute untuk menjalankan query kalo kedua persyaratan terpenuhi
         return true;
     } else {
         return false;
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['edit'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['tambah'])) {
     $id_provinsi = $_POST['id_provinsi'];
     $nama_provinsi = $_POST['nama_provinsi'];
     $ibukota = $_POST['ibukota'];
@@ -31,10 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['edit'])) {
 function editProvince($conn, $id_provinsi, $nama_provinsi, $ibukota)
 {
     $sql = "UPDATE provinsi SET nama_provinsi = ?, ibukota = ? WHERE id_provinsi = ?";
-    $params = [$nama_provinsi, $ibukota, $id_provinsi];
-    $stmt = sqlsrv_prepare($conn, $sql, $params);
+    $parameter = [$nama_provinsi, $ibukota, $id_provinsi];
+    $DataPengganti = sqlsrv_prepare($conn, $sql, $parameter);
 
-    if ($stmt && sqlsrv_execute($stmt)) {
+    if ($DataPengganti && sqlsrv_execute($DataPengganti)) {
         return true;
     } else {
         return false;
@@ -44,10 +46,11 @@ function editProvince($conn, $id_provinsi, $nama_provinsi, $ibukota)
 if (isset($_GET['aksi']) && $_GET['aksi'] == 'edit') {
     $id_provinsi = $_GET['id'];
     $sql = "SELECT * FROM provinsi WHERE id_provinsi = ?";
-    $params = [$id_provinsi];
-    $stmt = sqlsrv_prepare($conn, $sql, $params);
-    sqlsrv_execute($stmt);
-    $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+    $parameter = [$id_provinsi];
+    $DataPengganti = sqlsrv_prepare($conn, $sql, $parameter);
+    sqlsrv_execute($DataPengganti);
+    $row = sqlsrv_fetch_array($DataPengganti, SQLSRV_FETCH_ASSOC);
+    // sqlsrv_fetch_array mengambil data hasil query trus simpan di array asosiatif SQLSRV_FETCH_ASSOC
     if (isset($_POST['edit'])) {
         $id_provinsi = $_POST['id_provinsi'];
         $nama_provinsi = $_POST['nama_provinsi'];
@@ -65,10 +68,10 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'edit') {
 function deleteProvince($conn, $id_provinsi)
 {
     $sql = "DELETE FROM provinsi WHERE id_provinsi = ?";
-    $params = [$id_provinsi];
-    $stmt = sqlsrv_prepare($conn, $sql, $params);
+    $parameter = [$id_provinsi];
+    $DataPengganti = sqlsrv_prepare($conn, $sql, $parameter);
 
-    if ($stmt && sqlsrv_execute($stmt)) {
+    if ($DataPengganti && sqlsrv_execute($DataPengganti)) {
         return true;
     } else {
         return false;
@@ -99,7 +102,12 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'delete') {
         $(document).ready(function () {
             $("#flip").click(function () {
                 $("#addPanel").slideToggle("slow");
-                $("#editPanel").hide("slow");
+                $("#formEdit").hide("slow");
+            });
+
+            // jq cancel add
+            $('#addCancel').click(function () {
+                $('#addPanel').hide("slow");
             });
 
             // jq edit
@@ -110,20 +118,15 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'delete') {
                 $('#edit_id_provinsi').val(id);
                 $('#edit_nama_provinsi').val(nama_provinsi);
                 $('#edit_ibukota').val(ibukota);
-                $("#editPanel").show("slow");
+                $("#formEdit").show("slow");
                 $("#addPanel").hide("slow");
             });
 
             // jq cancel edit
             $('.cancel').click(function () {
-                $('#editPanel').hide("slow");
+                $('#formEdit').hide("slow");
             });
-
-            // jq cancel add
-            $('#addCancel').click(function () {
-                $('#addPanel').hide("slow");
-            });
-
+            
             // jq delete
             $('.delete').click(function () {
                 var id = $(this).data('id');
@@ -155,7 +158,7 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'delete') {
         <div id="addPanel" style="display:none;">
             <form action="index.php" method="post">
                 <div class="mb-3">
-                    <label for="id_provinsi" class="form-number">Nomor Index (001)</label>
+                    <label for="id_provinsi" class="form-number">Nomor Index (dari 001 ya)</label>
                     <input type="number" class="form-control" id="id_provinsi" name="id_provinsi" required>
                 </div>
                 <div class="mb-3">
@@ -171,7 +174,7 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'delete') {
                 
             </form>
         </div>
-        <div id="editPanel" style="display:none;">
+        <div id="formEdit" style="display:none;">
             <form action="index.php?aksi=edit" method="post">
                 <div class="mb-3">
                     <label for="edit_id_provinsi" class="form-number">Nomor</label>
@@ -201,13 +204,14 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'delete') {
             <tbody>
                 <?php $i = 1;
                 $sql = "SELECT * FROM provinsi";
-                $stmt = sqlsrv_query($conn, $sql);
-                while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) { ?>
+                $DataPengganti = sqlsrv_query($conn, $sql);
+                while ($row = sqlsrv_fetch_array($DataPengganti, SQLSRV_FETCH_ASSOC)) { ?>
                     <tr>
                         <th scope="row"><?= $i ?></th>
                         <td><?= htmlspecialchars($row['nama_provinsi']) ?></td>
                         <td><?= htmlspecialchars($row['ibukota']) ?></td>
                         <td>
+                            <!-- data-* untuk mengakses data tertentu jik tombol di klik  -->
                             <button class="btn btn-secondary edit" data-id="<?= $row['id_provinsi'] ?>"
                                 data-nama_provinsi="<?= htmlspecialchars($row['nama_provinsi']) ?>"
                                 data-ibukota="<?= htmlspecialchars($row['ibukota']) ?>"><b>Edit</b></button>
