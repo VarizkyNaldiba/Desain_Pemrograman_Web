@@ -168,7 +168,7 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'delete') {
                 </div>
                 <button type="submit" class="btn btn-primary">Tambah</button>
                 <button type="button" class="btn btn-secondary cancel" id="addCancel">Batal</button>
-                <!-- Added ID here -->
+                
             </form>
         </div>
         <div id="editPanel" style="display:none;">
