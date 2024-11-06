@@ -1,7 +1,7 @@
 <?php
 include 'ConnectToDB.php';
 
-// Fungsi untuk menambah provinsi
+// Fungsi menambahkan provinsi
 function createProvince($conn, $id_provinsi, $nama_provinsi, $ibukota)
 {
     $sql = "INSERT INTO provinsi (id_provinsi, nama_provinsi, ibukota) VALUES (?, ?, ?)";
@@ -15,7 +15,8 @@ function createProvince($conn, $id_provinsi, $nama_provinsi, $ibukota)
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['edit'])) {
+// Proses penambahan provinsi
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['tambah'])) {
     $id_provinsi = $_POST['id_provinsi'];
     $nama_provinsi = $_POST['nama_provinsi'];
     $ibukota = $_POST['ibukota'];
@@ -27,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['edit'])) {
     }
 }
 
-// Fungsi untuk mengedit provinsi
+// Fungsi mengedit provinsi
 function editProvince($conn, $id_provinsi, $nama_provinsi, $ibukota)
 {
     $sql = "UPDATE provinsi SET nama_provinsi = ?, ibukota = ? WHERE id_provinsi = ?";
@@ -41,27 +42,19 @@ function editProvince($conn, $id_provinsi, $nama_provinsi, $ibukota)
     }
 }
 
+// Proses edit provinsi
+$edit = false;
 if (isset($_GET['aksi']) && $_GET['aksi'] == 'edit') {
+    $edit = true;
     $id_provinsi = $_GET['id'];
     $sql = "SELECT * FROM provinsi WHERE id_provinsi = ?";
     $params = [$id_provinsi];
     $stmt = sqlsrv_prepare($conn, $sql, $params);
     sqlsrv_execute($stmt);
     $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
-    if (isset($_POST['edit'])) {
-        $id_provinsi = $_POST['id_provinsi'];
-        $nama_provinsi = $_POST['nama_provinsi'];
-        $ibukota = $_POST['ibukota'];
-        if (editProvince($conn, $id_provinsi, $nama_provinsi, $ibukota)) {
-            header("Location: index.php");
-            exit;
-        } else {
-            echo "Error: " . print_r(sqlsrv_errors(), true);
-        }
-    }
 }
 
-// Fungsi untuk menghapus provinsi
+// Fungsi menghapus provinsi
 function deleteProvince($conn, $id_provinsi)
 {
     $sql = "DELETE FROM provinsi WHERE id_provinsi = ?";
@@ -75,6 +68,7 @@ function deleteProvince($conn, $id_provinsi)
     }
 }
 
+// Proses hapus provinsi
 if (isset($_GET['aksi']) && $_GET['aksi'] == 'delete') {
     $id_provinsi = $_GET['id'];
     if (deleteProvince($conn, $id_provinsi)) {
@@ -85,6 +79,7 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'delete') {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -97,65 +92,47 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'delete') {
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
         $(document).ready(function () {
+            // Toggle form tambah
             $("#flip").click(function () {
-                $("#addPanel").slideToggle("slow");
-                $("#editPanel").hide("slow");
+                $("#panel").slideToggle("slow");
+                $('#editForm').hide(); // Ensure edit form is hidden when adding
             });
 
-            // jq edit
-            $('.edit').click(function () {
-                var id = $(this).data('id');
-                var nama_provinsi = $(this).data('nama_provinsi');
-                var ibukota = $(this).data('ibukota');
-                $('#edit_id_provinsi').val(id);
-                $('#edit_nama_provinsi').val(nama_provinsi);
-                $('#edit_ibukota').val(ibukota);
-                $("#editPanel").show("slow");
-                $("#addPanel").hide("slow");
+            // Function to show edit form
+            $('.edit-button').click(function () {
+                $('#editForm').slideDown("slow");
+                $("#panel").hide(); // Ensure add form is hidden when editing
             });
 
-            // jq cancel edit
-            $('.cancel').click(function () {
-                $('#editPanel').hide("slow");
+            // Hide form edit
+            $('.cancel-edit').click(function () {
+                $('#editForm').hide("slow");
             });
 
-            // jq cancel add
-            $('#addCancel').click(function () {
-                $('#addPanel').hide("slow");
-            });
-
-            // jq delete
-            $('.delete').click(function () {
-                var id = $(this).data('id');
-                if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
-                    $.ajax({
-                        type: 'GET',
-                        url: 'index.php',
-                        data: 'aksi=delete&id=' + id,
-                        success: function (response) {
-                            window.location.href = 'index.php';
-                        }
-                    });
-                }
+            // Hide form tambah
+            $('.cancel-tambah').click(function () {
+                $('#panel').hide("slow");
             });
         });
     </script>
 </head>
 
 <body>
-
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="index.php"><b>Provinsi Indonesia</b></a>
+            <a class="navbar-brand" href=" index.php"><b>Provinsi Indonesia</b></a>
         </div>
     </nav>
 
     <div class="container mt-4">
+        <!-- Tombol tambah untuk membuka form tambah -->
         <button id="flip" class="btn btn-primary mb-3"><b>[+]</b></button>
-        <div id="addPanel" style="display:none;">
+
+        <!-- Form Tambah Data -->
+        <div id="panel" style="display:none;">
             <form action="index.php" method="post">
                 <div class="mb-3">
-                    <label for="id_provinsi" class="form-number">Nomor Index (001)</label>
+                    <label for="id_provinsi" class="form-label">Nomor Index</label>
                     <input type="number" class="form-control" id="id_provinsi" name="id_provinsi" required>
                 </div>
                 <div class="mb-3">
@@ -166,59 +143,65 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'delete') {
                     <label for="ibukota" class="form-label">Ibu Kota Provinsi</label>
                     <input type="text" class="form-control" id="ibukota" name="ibukota" required>
                 </div>
-                <button type="submit" class="btn btn-primary">Tambah</button>
-                <button type="button" class="btn btn-secondary cancel" id="addCancel">Batal</button>
-                <!-- Added ID here -->
+                <button type="submit" class="btn btn-primary" name="tambah">Tambah</button>
+                <button type="button" class="btn btn-secondary cancel-tambah">Batal</button>
             </form>
         </div>
-        <div id="editPanel" style="display:none;">
-            <form action="index.php?aksi=edit" method="post">
+
+        <!-- Form Edit Data -->
+        <div id="editForm" style="display:none;">
+            <form action="index.php?aksi=edit&id=<?= isset($row['id_provinsi']) ? htmlspecialchars($row['id_provinsi']) : '' ?>" method="post">
                 <div class="mb-3">
-                    <label for="edit_id_provinsi" class="form-number">Nomor</label>
-                    <input type="number" class="form-control" id="edit_id_provinsi" name="id_provinsi" readonly>
+                    <label for="id_provinsi" class="form-label">Nomor Index</label>
+                    <input type="number" class="form-control" id="id_provinsi" name="id_provinsi"
+                        value="<?= isset($row['id_provinsi']) ? htmlspecialchars($row['id_provinsi']) : '' ?>" readonly>
                 </div>
                 <div class="mb-3">
-                    <label for="edit_nama_provinsi" class="form-label">Nama Provinsi</label>
-                    <input type="text" class="form-control" id="edit_nama_provinsi" name="nama_provinsi" required>
+                    <label for="nama_provinsi" class="form-label">Nama Provinsi</label>
+                    <input type="text" class="form-control" id="nama_provinsi" name="nama_provinsi"
+                        value="<?= isset($row['nama_provinsi']) ? htmlspecialchars($row['nama_provinsi']) : '' ?>" required>
                 </div>
                 <div class="mb-3">
-                    <label for="edit_ibukota" class="form-label">Ibu Kota Provinsi</label>
-                    <input type="text" class="form-control" id="edit_ibukota" name="ibukota" required>
+                    <label for="ibukota" class="form-label">Ibu Kota Provinsi</label>
+                    <input type="text" class="form-control" id="ibukota" name="ibukota"
+                        value="<?= isset($row['ibukota']) ? htmlspecialchars($row['ibukota']) : '' ?>" required>
                 </div>
-                <button type="submit" class="btn btn-primary" name="edit">Edit</button>
-                <button type="button" class="btn btn-secondary cancel">Batal</button>
+                <button type="submit" class="btn btn-primary" name="edit">Simpan</button>
+                <button type="button" class="btn btn-secondary cancel-edit">Batal</button>
             </form>
         </div>
+
+        <!-- Tabel Daftar Provinsi -->
         <table id="table" class="table table-striped table-bordered table-hover">
             <thead>
                 <tr>
-                    <th scope="col">No</th>
-                    <th scope="col">Nama Provinsi</th>
-                    <th scope="col">Ibu Kota Provinsi</th>
-                    <th scope="col">Aksi</th>
+                    <th>No</th>
+                    <th>Nama Provinsi</th>
+                    <th>Ibu Kota Provinsi</th>
+                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                <?php $i = 1;
+                <?php
+                $i = 1;
                 $sql = "SELECT * FROM provinsi";
                 $stmt = sqlsrv_query($conn, $sql);
                 while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) { ?>
                     <tr>
-                        <th scope="row"><?= $i ?></th>
+                        <td><?= $i ?></td>
                         <td><?= htmlspecialchars($row['nama_provinsi']) ?></td>
                         <td><?= htmlspecialchars($row['ibukota']) ?></td>
                         <td>
-                            <button class="btn btn-secondary edit" data-id="<?= $row['id_provinsi'] ?>"
-                                data-nama_provinsi="<?= htmlspecialchars($row['nama_provinsi']) ?>"
-                                data-ibukota="<?= htmlspecialchars($row['ibukota']) ?>"><b>Edit</b></button>
-                            <button class="btn btn-danger delete" data-id="<?= $row['id_provinsi'] ?>"><b>Hapus</b></button>
+                            <button class="btn btn-secondary edit-button" data-id="<?= $row['id_provinsi'] ?>">Edit</button>
+                            <a href="index.php?aksi=delete&id=<?= $row['id_provinsi'] ?>" class="btn btn-danger"
+                                onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Hapus</a>
                         </td>
                     </tr>
-                    <?php $i++;
+                    <?php
+                    $i++;
                 } ?>
             </tbody>
         </table>
-
     </div>
 </body>
 
