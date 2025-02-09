@@ -13,7 +13,8 @@ $text= 'there are 123 apples';
 if (preg_match($pattern,$text,$matches)) {
     echo "cocokkan : <b>" . $matches[0] . "</b>";
   } else {
-    echo "tidak ada yang cocok ! "  ;
+    echo "tidak ada yang cocok ! " ;
+    
   }
   echo "<br>";
   $pattern = '/apple/';
